@@ -38,7 +38,8 @@ SOURCES += \
     src/fft/arm_cfft_radix4_q15.c \
     src/fft/arm_cfft_radix4_init_q15.c \
     src/fft/arm_bitreversal.c \
-    src/periph/gpio.c
+    src/periph/gpio.c \
+    src/devices/buttons.c
 
 HEADERS += \
     src/devices/ili9341.h \
@@ -50,4 +51,5 @@ HEADERS += \
     src/system/system.h \
     src/periph/adc.h \
     src/fft/fft.h \
-    src/periph/gpio.h
+    src/periph/gpio.h \
+    src/devices/buttons.h

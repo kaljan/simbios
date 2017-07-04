@@ -25,6 +25,13 @@ if (GPIOG->ODR & GPIO_ODR_ODR_14) { \
 }
 
 
+typedef enum _GPIO_State {
+	LOW_STATE = 0,
+	HIGH_STATE
+} GPIO_State;
+
+
+GPIO_State GPIO_Debounce(GPIO_TypeDef *gpio, uint32_t pinmask);
 void GPIO_Init(void);
 
 
