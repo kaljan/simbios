@@ -39,7 +39,8 @@ SOURCES += \
     src/fft/arm_cfft_radix4_init_q15.c \
     src/fft/arm_bitreversal.c \
     src/periph/gpio.c \
-    src/devices/buttons.c
+    src/devices/buttons.c \
+    src/error_handler.c
 
 HEADERS += \
     src/devices/ili9341.h \
@@ -52,4 +53,5 @@ HEADERS += \
     src/periph/adc.h \
     src/fft/fft.h \
     src/periph/gpio.h \
-    src/devices/buttons.h
+    src/devices/buttons.h \
+    src/error_handler.h

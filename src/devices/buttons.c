@@ -1,10 +1,11 @@
 #include "buttons.h"
 
-
 struct button_list {
 	button_dsc_t *button;
 	struct button_list *next;
 };
+
+struct button_list *btn_list;
 
 int button_init(button_dsc_t **button, GPIO_TypeDef *gpio,
 	int pin, button_callback bclbk)
@@ -20,8 +21,8 @@ int button_init(button_dsc_t **button, GPIO_TypeDef *gpio,
 
 		(*button)->gpio = gpio;
 		(*button)->pinmask = (((uint32_t)1) << pin);
-		(*button)->button_event = RELEASED;
-		(*button)->button_state = RELEASED;
+		(*button)->button_event = HIGH_STATE;
+		(*button)->button_state = NONE;
 		(*button)->callback = bclbk;
 		(*button)->hold_cnt = 0;
 	}
@@ -59,6 +60,24 @@ int add_button_to_list(struct button_list **list,
 	return 0;
 }
 
+/*
+ * Механизм обработки нажатия на кнопку.
+ *
+ * Событие нажатия на кнопку -- это событие когда сначала на кнопку
+ * нажали а потом её отпустили.
+ *
+ * Сделать так, что бы когда одна из кнопок зажата другие кнопки
+ * не обрабатывались.
+ *
+ * Работать будет примерно следующим образом
+ *
+ * 1. Сначала дожидаемся момента когда кнопка будет нажата.
+ *    т.е. сначала кнопка была нажата, а потом её отпустили.
+ *
+ * 2. После этого запускается таймер, и идёт ожидание когда кнопка
+ *    будет отпущена.
+ *
+ */
 int button_handler(button_dsc_t *button)
 {
 	return 0;
@@ -66,6 +85,7 @@ int button_handler(button_dsc_t *button)
 
 int buttons_process(void)
 {
+	struct button_list *ptr = button_list;
 	return 0;
 }
 

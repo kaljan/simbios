@@ -30,6 +30,12 @@ typedef enum _GPIO_State {
 	HIGH_STATE
 } GPIO_State;
 
+typedef enum _GPIO_Event {
+	NONE = 0,
+	HIGH_TO_LOW,
+	LOW_TO_HIGH
+} GPIO_Event;
+
 
 GPIO_State GPIO_Debounce(GPIO_TypeDef *gpio, uint32_t pinmask);
 void GPIO_Init(void);

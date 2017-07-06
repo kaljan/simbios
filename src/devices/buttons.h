@@ -7,11 +7,11 @@
 
 typedef int (*button_callback)(void);
 
-
-typedef enum _din_event {
+typedef enum _button_evt {
+	NONE = 0,
 	PRESSED,
-	RELEASED
-} button_event;
+	HOLD
+} button_evt;
 
 typedef struct _din_dsc_t {
 	GPIO_TypeDef *gpio;
@@ -29,7 +29,7 @@ typedef struct _button_dsc_t {
 	GPIO_TypeDef *gpio;
 	uint32_t pinmask;
 	GPIO_State button_event;
-	GPIO_State button_state;
+	GPIO_Event button_state;
 	int hold_cnt;
 	button_callback callback;
 } button_dsc_t;
