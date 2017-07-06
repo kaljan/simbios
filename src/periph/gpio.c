@@ -17,11 +17,11 @@ GPIO_State GPIO_Debounce(GPIO_TypeDef *gpio, uint32_t pinmask)
 		}
 
 		if (debounce_cnt > GPIO_DEBOUNCE_MAX) {
-			return HIGH_STATE;
+			return GPIO_HIGH;
 		}
 
 		if (debounce_cnt < GPIO_DEBOUNCE_MIN) {
-			return LOW_STATE;
+			return GPIO_LOW;
 		}
 	}
 }

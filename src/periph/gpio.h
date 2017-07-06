@@ -26,16 +26,9 @@ if (GPIOG->ODR & GPIO_ODR_ODR_14) { \
 
 
 typedef enum _GPIO_State {
-	LOW_STATE = 0,
-	HIGH_STATE
+	GPIO_LOW = 0,
+	GPIO_HIGH
 } GPIO_State;
-
-typedef enum _GPIO_Event {
-	NONE = 0,
-	HIGH_TO_LOW,
-	LOW_TO_HIGH
-} GPIO_Event;
-
 
 GPIO_State GPIO_Debounce(GPIO_TypeDef *gpio, uint32_t pinmask);
 void GPIO_Init(void);

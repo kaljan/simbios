@@ -1,14 +1,8 @@
 #include "buttons.h"
 
-struct button_list {
-	button_dsc_t *button;
-	struct button_list *next;
-};
-
 struct button_list *btn_list;
 
-int button_init(button_dsc_t **button, GPIO_TypeDef *gpio,
-	int pin, button_callback bclbk)
+int button_init(button_dsc_t **button, GPIO_TypeDef *gpio, int pin)
 {
 	if (button == 0) {
 		return -1;
@@ -21,9 +15,8 @@ int button_init(button_dsc_t **button, GPIO_TypeDef *gpio,
 
 		(*button)->gpio = gpio;
 		(*button)->pinmask = (((uint32_t)1) << pin);
-		(*button)->button_event = HIGH_STATE;
-		(*button)->button_state = NONE;
-		(*button)->callback = bclbk;
+		(*button)->state = GPIO_HIGH;
+		(*button)->signal = NONE;
 		(*button)->hold_cnt = 0;
 	}
 
@@ -31,7 +24,7 @@ int button_init(button_dsc_t **button, GPIO_TypeDef *gpio,
 }
 
 int add_button_to_list(struct button_list **list,
-	GPIO_TypeDef *gpio,	int pin, button_callback bclbk)
+	GPIO_TypeDef *gpio,	int pin)
 {
 	struct button_list *tmp;
 	if (list == 0) {
@@ -49,7 +42,7 @@ int add_button_to_list(struct button_list **list,
 		return -1;
 	}
 
-	if (button_init(&(*list)->button, gpio, pin, bclbk) != 0) {
+	if (button_init(&(*list)->button, gpio, pin) != 0) {
 		return -1;
 	}
 
@@ -80,15 +73,75 @@ int add_button_to_list(struct button_list **list,
  */
 int button_handler(button_dsc_t *button)
 {
+	GPIO_State state = GPIO_Debounce(button->gpio, button->pinmask);
+
+	if (button->state == GPIO_HIGH) {
+		if ((state == GPIO_LOW)) {
+			button->state == GPIO_LOW;
+		}
+		return 0;
+	}
+
+	if (state == GPIO_HIGH) {
+		button->state = GPIO_HIGH;
+		button->signal = PRESSED;
+		return 0;
+	}
+
+	button->hold_cnt++;
+	if (button->hold_cnt > BUTTON_HOLD_MAX) {
+		button->signal = HOLD;
+	}
+
 	return 0;
 }
+
+/*
+ * Эта функция ищет кнопку на которой произошло какое-либо событие.
+ *
+ * Если ни на одной кнопке не произошло события. то возвращается NULL
+ *
+ * Если хоть на одной кнопке произошло событие, то возвращается
+ * указатель на дескриптор кнопки, на которой произошло событие.
+ *
+ */
+button_dsc_t *get_button(struct button_list *list)
+{
+	button_dsc_t* btn = NULL;
+
+	while (list != 0) {
+		button_handler(list->button);
+		if (list->button->state == GPIO_LOW) {
+			btn = list->button;
+			break;
+		}
+		list = list->next;
+	}
+	return btn;
+}
+
+/*
+ * Обработчик кнопок. его нужно будет поместить в systick
+ *
+ */
 
 int buttons_process(void)
 {
-	struct button_list *ptr = button_list;
+	static button_dsc_t* btn == NULL;
+
+	if (btn == NULL) {
+		btn = get_button(btn_list);
+		return 0;
+	}
+
+	button_handler(btn);
+
 	return 0;
 }
 
+/*
+ * Инициализация обработчика кнопок.
+ */
 int buttons_init(void)
 {
 	return 0;
